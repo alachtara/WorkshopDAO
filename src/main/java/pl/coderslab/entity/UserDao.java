@@ -17,6 +17,7 @@ public class UserDao {
     private static final String FIND_USER_QUERY = "SELECT * FROM users WHERE id = ?;";
     private static final String DELETE_USER_QUERY = "DELETE FROM users WHERE id = ?;";
     private static final String FIND_ALL_USERS_QUERY = "SELECT * FROM users;";
+    private static final String COUNT_USERS = "SELECT COUNT(id) AS 'rowsNumber' FROM users;";
 
     public static String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
@@ -33,12 +34,12 @@ public class UserDao {
             ResultSet rs = statement.getGeneratedKeys();
             if(rs.next()) {
                 user.setId(rs.getInt(1));
+                return user;
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return user;
+        return null;
     }
 
     public static User read(int userId) {
@@ -86,13 +87,13 @@ public class UserDao {
         }
     }
 
-    private User[] addToArray(User u, User[] users) {
+    private static User[] addToArray(User u, User[] users) {
         User[] tmpUsers = Arrays.copyOf(users, users.length + 1);
         tmpUsers[users.length] = u;
         return tmpUsers;
     }
 
-    public User[] findAllToArray (){
+    public static User[] findAllToArray (){
         try (Connection conn = DbUtil.getConnection()) {
             User[] users = new User[0];
             PreparedStatement preparedStatement = conn.prepareStatement(FIND_ALL_USERS_QUERY);
@@ -131,6 +132,21 @@ public class UserDao {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static int countRows() {
+        try (Connection connection = DbUtil.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(COUNT_USERS);
+
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()) {
+                return resultSet.getInt("rowsNumber");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }
 

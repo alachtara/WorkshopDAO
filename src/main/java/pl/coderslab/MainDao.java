@@ -32,6 +32,7 @@ public class MainDao {
 
 //        UserDao.delete(2);
 
-        System.out.println(UserDao.findAll());
+//        System.out.println(UserDao.findAll());
+
     }
 }

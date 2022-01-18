@@ -1,5 +1,7 @@
 package pl.coderslab.entity;
 
+import java.util.Objects;
+
 public class User {
     private int id;
     private String userName;
@@ -46,5 +48,18 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return getId() == user.getId() && getUserName().equals(user.getUserName()) && getEmail().equals(user.getEmail());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getUserName(), getEmail());
     }
 }
